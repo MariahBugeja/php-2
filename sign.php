@@ -10,11 +10,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
-    // Check if passwords match
     if ($password !== $confirm_password) {
         $message = "Passwords do not match";
     } else {
-        // Check if username is already taken
+        // Check if username already exists
         $check_username_sql = "SELECT * FROM user WHERE username = ?";
         $check_username_stmt = $conn->prepare($check_username_sql);
         $check_username_stmt->bind_param("s", $username);
@@ -24,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($check_username_result->num_rows > 0) {
             $message = "Username is already taken";
         } else {
-            // Check if email is already registered
+            // Check if email already exists
             $check_email_sql = "SELECT * FROM user WHERE email = ?";
             $check_email_stmt = $conn->prepare($check_email_sql);
             $check_email_stmt->bind_param("s", $email);
@@ -34,10 +33,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($check_email_result->num_rows > 0) {
                 $message = "Email is already registered";
             } else {
-                // Insert new user into database
+                // Hash password before storing
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
                 $insert_sql = "INSERT INTO user (username, email, password) VALUES (?, ?, ?)";
                 $insert_stmt = $conn->prepare($insert_sql);
-                $insert_stmt->bind_param("sss", $username, $email, $password);
+                $insert_stmt->bind_param("sss", $username, $email, $hashed_password);
 
                 if ($insert_stmt->execute()) {
                     $_SESSION['message'] = "Signup successful. You can now login.";
@@ -53,7 +54,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $conn->close();
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">

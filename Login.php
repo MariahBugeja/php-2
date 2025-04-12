@@ -19,9 +19,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = $login_result->fetch_assoc();
         
         if ($password === $user['password']) {  
-            $_SESSION['userId'] = $user['userid'];
+            $_SESSION['user_id'] = $user['userid'];  // Updated session variable name
             session_regenerate_id(true); 
-            header("Location: create.php"); 
+            header("Location: index.php"); 
             exit;
         }
     }
@@ -56,7 +56,7 @@ $conn->close();
                 
                 <button type="submit">Login</button>
                 
-                <p>Don't have an account? <a href="sign.php">Sign up</a></p> 
+                <p>Don't have an account? <a href="sign.php">Sign up</a></p>
             </form>
         </div>
     </div>
