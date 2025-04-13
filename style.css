@@ -1,0 +1,729 @@
+.login-body {
+    font-family: Arial, sans-serif;
+    background: url('assets/background.png') no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+}
+
+.login-body .overlay {
+    background: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-body .login-container {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-body .login-form h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #e60023;
+}
+
+.login-body .login-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.login-body .login-form input {
+    width: 100%;
+    padding: 10px; 
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;  
+}
+
+.login-body .login-form button {
+    width: 100%;
+    padding: 10px;
+    background: #e60023;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+
+.login-body .login-form p {
+    text-align: center;
+    color: #666;
+}
+
+.login-body .login-form p a {
+    color: #e60023;
+    text-decoration: none;
+}
+
+.login-body .error {
+    color: red;
+    text-align: center;
+}
+
+
+.signup-body {
+    font-family: Arial, sans-serif;
+    background: url('assets/background.png') no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+}
+
+.signup-body .overlay {
+    background: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signup-body .signup-container {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.signup-body .signup-form h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #e60023;
+}
+
+.signup-body .signup-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.signup-body .signup-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.signup-body .signup-form button {
+    width: 100%;
+    padding: 10px;
+    background: #e60023;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.signup-body .signup-form p {
+    text-align: center;
+    color: #666;
+}
+
+.signup-body .signup-form p a {
+    color: #e60023;
+    text-decoration: none;
+}
+
+.signup-body .error {
+    color: red;
+    text-align: center;
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fafafa;
+}
+
+/* The main container for the header */
+.pinfood-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    padding: 10px 30px;
+    background-color: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+/* pinfood inside the header */
+.pinfood-header .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #e60023; 
+    text-decoration: none;
+    flex-shrink: 0; 
+}
+
+/* The search bar container */
+.pinfood-header .search-bar {
+    flex: 1;
+    max-width: 600px; 
+    position: relative;
+    margin: 0 20px; 
+}
+
+/* Search bar input */
+.pinfood-header .search-bar input {
+    width: 100%;
+    padding: 8px 40px 8px 12px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    outline: none;
+}
+
+/* Search icon inside the input */
+.pinfood-header .search-icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 16px;
+    pointer-events: none; 
+}
+
+.pinfood-header .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+    flex-shrink: 0; 
+}
+
+.pinfood-header .nav-links a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 20px;
+    transition: background-color 0.2s;
+}
+
+.pinfood-header .nav-links a:hover {
+    background-color: #f2f2f2;
+}
+
+
+
+.container {
+    width: 50%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.h2form {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.labelform {
+    font-weight: bold;
+}
+
+.inputform,
+.textareaform,
+.selectform {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.image-uploadform {
+    border: 2px dashed #ccc;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; 
+}
+
+#previewImage {
+    margin-top: 15px;
+    max-width: 100%;
+    max-height: 300px;
+    margin-bottom: 15px;
+    display: block; 
+    margin-left: auto; 
+    margin-right: auto; 
+}
+
+.hidden {
+    display: none;
+}
+
+.inputform,
+.textareaform,
+.selectform {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.buttonform {
+    padding: 12px;
+    background-color: #e60023;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.buttonform:hover {
+    background-color: #93091e;
+}
+
+.dragover {
+    border-color: #000;
+}
+
+
+
+.profile-body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+
+/* profilepage */
+
+
+.profile-container {
+    margin-top: 30px;  
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-header h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.profile-header p {
+    font-size: 1.2em;
+    color: #555;
+}
+
+.grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; 
+    padding: 20px; 
+}
+
+
+
+.grid-item img {
+    width: 100%;
+
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    height: 200px;
+
+    width: 250px; 
+    max-width: 90%; 
+    object-fit: cover;
+}
+
+.grid-item h4,
+.grid-item p {
+    padding: 10px;
+    color: #333;
+}
+
+.grid-item:hover {
+    transform: translateY(-5px);
+}
+
+.profile-picture {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.profile-picture img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    cursor: pointer;
+    object-fit: cover;
+    border: 3px solid #ccc;
+    transition: 0.3s;
+}
+
+.profile-picture img:hover {
+    opacity: 0.8;
+}
+
+.hidden-input {
+    display: none;
+}
+
+/* Buttons to switch between Created and Saved Posts */
+.toggle-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.toggle-buttons button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: 1px solid #ccc;
+    background-color: #f4f4f4;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1.2em;
+    transition: background-color 0.3s;
+}
+
+.toggle-buttons button.active {
+    background-color: #e60023;
+    color: white;
+}
+
+.toggle-buttons button:hover {
+    background-color: #ddd;
+}
+.created-posts h3{
+    padding-left: 40px;
+}
+.created-posts p{
+    padding-left: 40px;
+}
+.saved-posts  h3{
+    padding-left: 40px;
+}
+
+.saved-posts  p{
+    padding-left: 40px;
+}
+.posts-container .created-posts,
+.posts-container .saved-posts {
+    display: none;
+    
+}
+
+/* Logout Button Styling */
+.logout-button {
+    padding: 8px 15px; 
+    font-size: 0.9em;  
+    background: #e60023;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 10px; 
+    width: auto;
+}
+
+.logout-button:hover {
+    background: #93091e;
+}
+.profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px 0; 
+    width: 100%; 
+    box-sizing: border-box;
+}
+
+.logout-button {
+    width: auto;  
+    padding: 10px 20px;  
+    background: #e60023;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 10px; 
+}
+
+.logout-button:hover {
+    background: #93091e;
+}
+
+/* viewpost */
+.bodypost {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    z-index: 1000;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.post-container {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    width: 100%;
+    padding: 20px; 
+}
+
+.post-wrapper {
+    display: flex;
+    background: #fff;
+    width: 1000px;
+    height: 600px;
+    border-radius: 24px;
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.post-image {
+    width: 55%;
+    height: 100%;
+}
+
+.post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.post-content {
+    width: 100%; 
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center !important;
+    margin-bottom: 20px; 
+}
+
+.post-content h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.post-content p {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+}
+
+.post-content .username {
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+}
+
+.save-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #e60023;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 24px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.save-button:hover {
+    background: #c4001a;
+}
+
+.comments-section {
+    margin-top: 20px;
+    max-height: 500px !important;
+    overflow-y: auto;
+}
+
+.comment {
+    background: #f1f1f1;
+    padding: 10px 14px;
+    border-radius: 16px;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.comment-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.comment-box textarea {
+    width: 100%;
+    height: 50px;
+    padding: 12px;
+    border: none;
+    border-radius: 24px;
+    background: #f1f1f1;
+    font-size: 15px;
+    resize: none;
+}
+
+.comment-box textarea:focus {
+    outline: none;
+    background: #e8e8e8;
+}
+
+.comment-box button {
+    background: #e60023;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 24px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.comment-box button:hover {
+    background: #c4001a;
+}
+
+.random-posts {
+    margin-top: 40px; 
+    width: 100%; 
+    padding-top: 50px;
+}
+
+.random-posts h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.random-posts-wrapper {
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 20px; 
+    justify-content: center; 
+}
+
+.random-post {
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: calc(33.333% - 20px); 
+    max-width: 300px;
+    margin-bottom: 20px; 
+}
+
+.random-post img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.random-post h4 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px;
+}
+
+.random-post p {
+    font-size: 14px;
+    color: #555;
+    margin: 0 10px 10px;
+}
+
+.random-post a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.save-button {
+    position: absolute;
+    top: 100px !important;
+    right: 430px !important;
+    background: #e60023;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 24px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    z-index: 1100; 
+}
+
+.save-button:hover {
+    background: #c4001a;
+}
