@@ -727,3 +727,16 @@ body {
 .save-button:hover {
     background: #c4001a;
 }
+
+
+.like-button {
+    display: inline-block;
+    cursor: pointer;
+    fill: #ccc; 
+    transition: fill 0.3s ease;
+    width: 24px;
+    height: 24px;
+}
+.like-button:hover {
+    fill: red; /* Hover color */
+}
