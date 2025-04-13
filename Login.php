@@ -1,11 +1,10 @@
 <?php
 session_start();
-
 require_once 'db_connection.php';
 
 $message = '';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email']) && isset($_POST['password'])) {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
@@ -17,15 +16,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($login_result->num_rows === 1) {
         $user = $login_result->fetch_assoc();
-        
-        if ($password === $user['password']) {  
-            $_SESSION['user_id'] = $user['userid'];  // Updated session variable name
+
+        // PLAIN TEXT password check
+        if ($password === $user['password']) {
+            $_SESSION['user_id'] = $user['userid'];
             session_regenerate_id(true); 
-            header("Location: index.php"); 
+            header("Location: index.php");
             exit;
         }
     }
-    
+
     $message = "Invalid email or password.";
 }
 
@@ -46,7 +46,7 @@ $conn->close();
             <form method="post" class="login-form">
                 <h1>Login to Pinfood</h1>
                 <?php if ($message): ?>
-                    <p class="error"><?php echo $message; ?></p>
+                    <p class="error"><?php echo htmlspecialchars($message); ?></p>
                 <?php endif; ?>
                 <label for="email">Email address</label>
                 <input type="email" id="email" name="email" required>
