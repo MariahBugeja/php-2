@@ -208,14 +208,14 @@ $conn->close();
 
                 <p><?php echo nl2br(htmlspecialchars($post['description'])); ?></p>
                 <p class="username">By: <?php echo htmlspecialchars($post['username']); ?></p>
-                <form id="loveForm" action="love_post.php" method="post">
-        <input type="hidden" name="postid" value="<?php echo $post_id; ?>">
-        <input type="hidden" name="love_status" value="<?php echo $user_has_loved ? 'loved' : 'unloved'; ?>">
-        <button type="submit" name="love" value="1" style="border: none; background: none;">
-            <svg id="likeButton" class="like-button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>            </svg>
-        </button>
-    </form>
+                <form action="love_post.php" method="post">
+    <input type="hidden" name="postid" value="<?php echo $post_id; ?>">
+    <button type="submit" name="love" value="1">
+        ❤️
+    </button>
+</form>
+
+
                 
                 <!-- Comments Section -->
                 <div class="comments-section">
@@ -282,17 +282,35 @@ $conn->close();
             if (loveStatus === "loved") {
                 loveButton.style.fill = "red";
             }
+            document.querySelectorAll(".like-btn").forEach(button => {
+  button.addEventListener("click", function () {
+    const postId = this.dataset.postid;
 
-            loveButton.addEventListener("click", function(event) {
-                event.preventDefault(); 
+    fetch("like.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: `postid=${encodeURIComponent(postId)}`
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data); // Log response
 
-                if (loveButton.style.fill === "red") {
-                    loveButton.style.fill = "#ccc";
-                } else {
-                    loveButton.style.fill = "red";
-                }
-            });
-        });
+        if (data.status === 'liked') {
+          this.textContent = "💔 Unlike";
+        } else if (data.status === 'unliked') {
+          this.textContent = "❤️ Like";
+        } else if (data.error) {
+          alert("Error: " + data.error);
+        }
+      })
+      .catch(error => {
+        console.error("Fetch error:", error);
+      });
+  });
+});
+
         }
     </script>
 </body>

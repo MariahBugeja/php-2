@@ -1,34 +1,44 @@
 <?php
 session_start();
+
 require_once 'db_connection.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['postid'], $_POST['love_status'], $_SESSION['user_id'])) {
-        $post_id = $_POST['postid'];
-        $user_id = $_SESSION['user_id'];
-        $love_status = $_POST['love_status'];
+header('Content-Type: application/json');
 
-        // Handle the like/unlike action
-        if ($love_status === 'unloved') {
-            // Insert like into the database
-            $query = "INSERT INTO `like` (userid, postid) VALUES (?, ?)";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("ii", $user_id, $post_id);
-            $stmt->execute();
-        } else {
-            // Remove like from the database
-            $query = "DELETE FROM `like` WHERE userid = ? AND postid = ?";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("ii", $user_id, $post_id);
-            $stmt->execute();
-        }
-
-        // Redirect back to the post page
-        header("Location: post.php?postid=$post_id");
-        exit;
-    }
-} else {
-    echo "Invalid request.";
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(["error" => "User not logged in"]);
+    exit;
 }
 
+// Use the correct session variable names
+$userId = $_SESSION['user_id'];
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Anonymous'; 
+
+$postId = isset($_POST['postid']) ? intval($_POST['postid']) : null;
+
+if ($postId) {
+    $query = "INSERT INTO `like` (UserId, postid, username) VALUES (?, ?, ?)";
+
+    if ($conn) {
+        $stmt = $conn->prepare($query);
+        if ($stmt === false) {
+            echo json_encode(["error" => "Database error: " . $conn->error]);
+            exit;
+        }
+
+        $stmt->bind_param("iis", $userId, $postId, $username);
+        if ($stmt->execute()) {
+            echo json_encode(["status" => "liked", "postid" => $postId]);
+        } else {
+            echo json_encode(["error" => "Failed to like the post"]);
+        }
+
+        $stmt->close();
+    } else {
+        echo json_encode(["error" => "Database connection failed"]);
+    }
+} else {
+    echo json_encode(["error" => "Invalid post ID"]);
+}
 ?>

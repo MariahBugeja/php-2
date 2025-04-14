@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email']) && isset($_PO
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    $login_sql = "SELECT userid, password FROM user WHERE email = ?";
+    $login_sql = "SELECT userid, username, password FROM user WHERE email = ?";
     $login_stmt = $conn->prepare($login_sql);
     $login_stmt->bind_param("s", $email);
     $login_stmt->execute();
@@ -20,6 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email']) && isset($_PO
         // PLAIN TEXT password check
         if ($password === $user['password']) {
             $_SESSION['user_id'] = $user['userid'];
+            $_SESSION['username'] = $user['username'];
             session_regenerate_id(true); 
             header("Location: index.php");
             exit;
