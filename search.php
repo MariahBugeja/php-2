@@ -2,6 +2,8 @@
 if (isset($_GET['query'])) {
     $searchTerm = trim($_GET['query']);
     include 'db_connection.php';
+    include 'includes/header.php'; 
+
 
     $like = "%" . $searchTerm . "%";
 
@@ -24,11 +26,12 @@ if (isset($_GET['query'])) {
     if ($resultsPost->num_rows > 0 || $resultsRecipe->num_rows > 0) {
         echo "<div class='search-results-container'>";  // Start Pinterest-style grid
 
-        // Display results from 'post' table
+        // Display results from 'post' table with clickable links
         if ($resultsPost->num_rows > 0) {
             while ($row = $resultsPost->fetch_assoc()) {
+                // Link to post.php with the postid as a GET parameter
                 echo "<div class='search-item'>";
-                echo "<div class='search-card'>";
+                echo "<a href='post.php?postid=" . htmlspecialchars($row['postId']) . "' class='search-card'>";
                 echo "<img src='" . htmlspecialchars($row['image']) . "' alt='Recipe Image' />";
                 echo "<div class='search-card-content'>";
                 echo "<h2>" . htmlspecialchars($row['title']) . "</h2>";
@@ -38,11 +41,11 @@ if (isset($_GET['query'])) {
                     echo "<p>Recipe ID: " . $row['recipeid'] . "</p>";
                 }
 
-                echo "</div></div></div>";
+                echo "</div></a></div>";  // Close the link and search item div
             }
         }
 
-        // Display results from 'postrecipe' table
+        // Display results from 'postrecipe' table without clickable links
         if ($resultsRecipe->num_rows > 0) {
             while ($row = $resultsRecipe->fetch_assoc()) {
                 echo "<div class='search-item'>";
@@ -93,7 +96,10 @@ if (isset($_GET['query'])) {
     }
 
     .search-card {
+        display: block;
         padding: 15px;
+        text-decoration: none;
+        color: inherit;
     }
 
     .search-card img {
