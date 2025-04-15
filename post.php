@@ -12,7 +12,6 @@ if ($post_id <= 0) {
 }
 
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
-// Fetch the post details
 $sql = "SELECT post.*, user.username FROM post 
         JOIN user ON post.userid = user.userid 
         WHERE post.postid = ?";
@@ -80,13 +79,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_post'])) {
 
             $insert_stmt->bind_param("ii", $user_id, $post_id);
             if ($insert_stmt->execute()) {
-                $is_saved = true; // Update the status to saved
+                $is_saved = true; 
             } else {
                 echo "Error saving post: " . $conn->error;
             }
         }
 
-        // After saving or unsaving, redirect to avoid resubmission
         header("Location: post.php?postid=" . $post_id);
         exit;
     } else {
@@ -142,7 +140,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_comment']) && iss
     }
 }
 
-// Fetch the comments for the post
 $comment_sql = "SELECT comment.commentId, comment.userid, comment.content, comment.timestamp, user.username 
                 FROM comment 
                 JOIN user ON comment.userid = user.userid 
@@ -179,6 +176,8 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($post['title']); ?></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
 </head>
 <body class="bodypost">
@@ -208,12 +207,15 @@ $conn->close();
 
                 <p><?php echo nl2br(htmlspecialchars($post['description'])); ?></p>
                 <p class="username">By: <?php echo htmlspecialchars($post['username']); ?></p>
-                <form action="love_post.php" method="post">
+                <form method="POST" action="love_post.php" class="like-form">
     <input type="hidden" name="postid" value="<?php echo $post_id; ?>">
-    <button type="submit" name="love" value="1">
-        ❤️
-    </button>
-</form>
+    <button 
+    id="loveButton-<?php echo $post_id; ?>" 
+    data-liked="<?php echo $user_has_loved ? 'true' : 'false'; ?>"
+    class="fa-heart <?php echo $user_has_loved ? 'fa-solid' : 'fa-regular'; ?>"
+    style="background: none; border: none; font-size: 24px; color: <?php echo $user_has_loved ? 'red' : '#ccc'; ?>; cursor: pointer;">
+</button>
+
 
 
                 
@@ -272,46 +274,56 @@ $conn->close();
     </div>
 
     <script>
-        function toggleEditForm(commentId) {
-            let form = document.getElementById("edit-form-" + commentId);
-            form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
-            document.addEventListener("DOMContentLoaded", function() {
-            var loveButton = document.getElementById("likeButton");
-            var loveStatus = "<?php echo $user_has_loved ? 'loved' : 'unloved'; ?>";
+    function toggleEditForm(commentId) {
+        let form = document.getElementById("edit-form-" + commentId);
+        form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        const likeButton = document.getElementById("loveButton-<?php echo $post_id; ?>");
 
-            if (loveStatus === "loved") {
-                loveButton.style.fill = "red";
-            }
-            document.querySelectorAll(".like-btn").forEach(button => {
-  button.addEventListener("click", function () {
-    const postId = this.dataset.postid;
+        if (likeButton) {
+            likeButton.addEventListener("click", function (e) {
+                e.preventDefault();
 
-    fetch("like.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: `postid=${encodeURIComponent(postId)}`
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data); // Log response
+                const postId = <?php echo $post_id; ?>;
+                const isLiked = likeButton.getAttribute("data-liked") === "true";
+                const action = isLiked ? "unliked" : "liked";
 
-        if (data.status === 'liked') {
-          this.textContent = "💔 Unlike";
-        } else if (data.status === 'unliked') {
-          this.textContent = "❤️ Like";
-        } else if (data.error) {
-          alert("Error: " + data.error);
+                likeButton.setAttribute("data-liked", !isLiked);
+                likeButton.classList.toggle("fa-solid", !isLiked);
+                likeButton.classList.toggle("fa-regular", isLiked);
+                likeButton.style.color = !isLiked ? "red" : "#ccc";
+
+                fetch("love_post.php", {
+                    method: "POST",
+                    body: new URLSearchParams({
+                        postid: postId,
+                        action: action
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status !== "liked" && data.status !== "unliked") {
+                        alert("Something went wrong: " + data.error);
+                        // Revert UI in case of error
+                        likeButton.setAttribute("data-liked", isLiked);
+                        likeButton.classList.toggle("fa-solid", isLiked);
+                        likeButton.classList.toggle("fa-regular", !isLiked);
+                        likeButton.style.color = isLiked ? "red" : "#ccc";
+                    }
+                })
+                .catch(err => {
+                    console.error("Error:", err);
+                    alert("An error occurred.");
+                    likeButton.setAttribute("data-liked", isLiked);
+                    likeButton.classList.toggle("fa-solid", isLiked);
+                    likeButton.classList.toggle("fa-regular", !isLiked);
+                    likeButton.style.color = isLiked ? "red" : "#ccc";
+                });
+            });
         }
-      })
-      .catch(error => {
-        console.error("Fetch error:", error);
-      });
-  });
-});
+    });
+</script>
 
-        }
-    </script>
 </body>
 </html>
