@@ -215,7 +215,7 @@ $conn->close();
     class="fa-heart <?php echo $user_has_loved ? 'fa-solid' : 'fa-regular'; ?>"
     style="background: none; border: none; font-size: 24px; color: <?php echo $user_has_loved ? 'red' : '#ccc'; ?>; cursor: pointer;">
 </button>
-
+</form> 
 
 
                 
@@ -305,7 +305,6 @@ $conn->close();
                 .then(data => {
                     if (data.status !== "liked" && data.status !== "unliked") {
                         alert("Something went wrong: " + data.error);
-                        // Revert UI in case of error
                         likeButton.setAttribute("data-liked", isLiked);
                         likeButton.classList.toggle("fa-solid", isLiked);
                         likeButton.classList.toggle("fa-regular", !isLiked);
@@ -315,6 +314,7 @@ $conn->close();
                 .catch(err => {
                     console.error("Error:", err);
                     alert("An error occurred.");
+                    // Revert UI in case of error
                     likeButton.setAttribute("data-liked", isLiked);
                     likeButton.classList.toggle("fa-solid", isLiked);
                     likeButton.classList.toggle("fa-regular", !isLiked);
