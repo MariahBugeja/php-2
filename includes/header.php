@@ -12,10 +12,11 @@
   <!-- Left: Logo/Brand -->
   <a href="#" class="logo">Pinfood</a>
   
-  <!-- Middle: Search Bar -->
   <div class="search-bar">
-    <input type="text" placeholder="Search" />
-    <span class="search-icon">&#128269;</span>
+    <form action="search.php" method="GET">
+      <input type="text" name="query" placeholder="Search" required />
+      <button type="submit" class="search-icon">&#128269;</button>
+    </form>
   </div>
 
   <!-- Right: Navigation Links (or icons) -->

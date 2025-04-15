@@ -1,74 +1,119 @@
 <?php
-session_start();
-require_once 'db_connection.php';
-include 'includes/header.php';
-
-function generateCard($row) {
-    $link = '';
-    if ($row['source'] === 'post') {
-        $link = 'viewpost.php?postid=' . $row['id'];
-    } elseif ($row['source'] === 'postrecipe') {
-        $link = 'viewrecipe.php?recipeid=' . $row['id'];
-    }
-    return '
-    <a href="' . $link . '" class="search-card-link"> <!-- Added link to viewpost or viewrecipe -->
-        <div class="search-card"> <!-- Added class "search-card" -->
-            <img src="' . htmlspecialchars($row["image"]) . '" alt="' . htmlspecialchars($row["title"]) . '" class="search-card-image"> <!-- Added class "search-card-image" -->
-            <div class="search-card-content"> <!-- Added class "search-card-content" -->
-                <h3 class="search-card-content-h3">' . htmlspecialchars($row["title"]) . '</h3> <!-- Added class "search-card-content-h3" -->
-            </div>
-        </div>
-    </a>';
-}
-
-$resultsHtml = '';
-
 if (isset($_GET['query'])) {
-    $query = '%' . $_GET['query'] . '%';
+    $searchTerm = trim($_GET['query']);
+    include 'db_connection.php';
 
-    $stmt1 = $conn->prepare("SELECT 'post' AS source, postId AS id, title, description, image, Userid, Typeoffood AS additional FROM post WHERE title LIKE ? OR Typeoffood LIKE ?");
-    $stmt1->bind_param("ss", $query, $query);
-    $stmt1->execute();
-    $result1 = $stmt1->get_result();
+    $like = "%" . $searchTerm . "%";
 
-    $stmt2 = $conn->prepare("SELECT 'postrecipe' AS source, recipeId AS id, title, description, image, userid, ingredients AS additional FROM postrecipe WHERE title LIKE ? OR ingredients LIKE ?");
-    $stmt2->bind_param("ss", $query, $query);
-    $stmt2->execute();
-    $result2 = $stmt2->get_result();
-
-    if ($result1->num_rows > 0 || $result2->num_rows > 0) {
-        while ($row = $result1->fetch_assoc()) {
-            $resultsHtml .= generateCard($row);
+    // Function to perform the search on a table
+    function runSearch($conn, $table, $like) {
+        $stmt = $conn->prepare("SELECT * FROM $table WHERE title LIKE ?");
+        if (!$stmt) {
+            die("SQL error in $table: " . $conn->error);
         }
-        while ($row = $result2->fetch_assoc()) {
-            $resultsHtml .= generateCard($row);
-        }
-    } else {
-        $resultsHtml = '<p>No results found.</p>';
+        $stmt->bind_param("s", $like);
+        $stmt->execute();
+        return $stmt->get_result();
     }
 
-    $stmt1->close();
-    $stmt2->close();
-} else {
-    $resultsHtml = '<p>No search query provided.</p>';
-}
+    // Perform the search on both tables
+    $resultsPost = runSearch($conn, "post", $like);
+    $resultsRecipe = runSearch($conn, "postrecipe", $like);
 
-$conn->close();
+    // Check if any results were found
+    if ($resultsPost->num_rows > 0 || $resultsRecipe->num_rows > 0) {
+        echo "<div class='search-results-container'>";  // Start Pinterest-style grid
+
+        // Display results from 'post' table
+        if ($resultsPost->num_rows > 0) {
+            while ($row = $resultsPost->fetch_assoc()) {
+                echo "<div class='search-item'>";
+                echo "<div class='search-card'>";
+                echo "<img src='" . htmlspecialchars($row['image']) . "' alt='Recipe Image' />";
+                echo "<div class='search-card-content'>";
+                echo "<h2>" . htmlspecialchars($row['title']) . "</h2>";
+
+                // Check if 'recipeid' exists in 'post' table results
+                if (isset($row['recipeid'])) {
+                    echo "<p>Recipe ID: " . $row['recipeid'] . "</p>";
+                }
+
+                echo "</div></div></div>";
+            }
+        }
+
+        // Display results from 'postrecipe' table
+        if ($resultsRecipe->num_rows > 0) {
+            while ($row = $resultsRecipe->fetch_assoc()) {
+                echo "<div class='search-item'>";
+                echo "<div class='search-card'>";
+                echo "<img src='" . htmlspecialchars($row['image']) . "' alt='Recipe Image' />";
+                echo "<div class='search-card-content'>";
+                echo "<h2>" . htmlspecialchars($row['title']) . "</h2>";
+
+                // Check if 'recipeid' exists in 'postrecipe' table results
+                if (isset($row['recipeid'])) {
+                    echo "<p>Recipe ID: " . $row['recipeid'] . "</p>";
+                }
+
+                echo "</div></div></div>";
+            }
+        }
+
+        echo "</div>";  // End search-results-container
+    } else {
+        echo "No results found for <strong>" . htmlspecialchars($searchTerm) . "</strong>.";
+    }
+
+    $conn->close();
+} else {
+    echo "No search term provided.";
+}
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Results</title>
 <style>
+    /* Search results specific styles */
+    .search-results-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px;
+    }
 
+    .search-item {
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .search-item:hover {
+        transform: translateY(-10px);
+    }
+
+    .search-card {
+        padding: 15px;
+    }
+
+    .search-card img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .search-card-content {
+        margin-top: 10px;
+    }
+
+    .search-card-content h2 {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 0 0 10px;
+    }
+
+    .search-card-content p {
+        font-size: 14px;
+        color: #555;
+    }
 </style>
-</head>
-<body>
-    <div class="search-results">
-        <?php echo $resultsHtml; ?>
-    </div>
-</body>
-</html>
