@@ -10,7 +10,7 @@
 
 <header class="pinfood-header">
   <!-- Left: Logo/Brand -->
-  <a href="#" class="logo">Pinfood</a>
+  <a href="index.php" class="logo">Pinfood</a>
   
   <div class="search-bar">
     <form action="search.php" method="GET">
