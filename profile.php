@@ -113,8 +113,11 @@ $conn->close();
     <h3>Saved Posts</h3>
     <?php if ($saved_posts_result->num_rows > 0): ?>
         <div class="grid-container">
+            
             <?php while ($saved_post = $saved_posts_result->fetch_assoc()): ?>
                 <div class="grid-item">
+                <a href="post.php?postid=<?php echo $saved_post['postId']; ?>">
+
                     <?php 
                     $savedImagePath = htmlspecialchars($saved_post['image']);
                     if (!empty($savedImagePath) && file_exists($savedImagePath)): ?>
@@ -123,6 +126,7 @@ $conn->close();
                         <p>Image not available</p>
                         <p>Expected Path: <?php echo $savedImagePath; ?></p>
                     <?php endif; ?>
+                    </a>
                 </div>
             <?php endwhile; ?>
         </div>
