@@ -123,8 +123,21 @@ $comment_stmt->bind_param("i", $recipe_id);
 $comment_stmt->execute();
 $comments_result = $comment_stmt->get_result();
 
-// Random recipes
-$random_recipes_result = $conn->query("SELECT * FROM postrecipe ORDER BY RAND() LIMIT 3");
+// Fetch other random posts to display
+$random_recipes_sql = "SELECT postrecipe.*, user.username FROM postrecipe 
+                     JOIN user ON postrecipe.userid = user.userid 
+                     WHERE postrecipe.recipeId != ? 
+                     ORDER BY RAND() LIMIT 3";
+$random_recipes_stmt = $conn->prepare($random_recipes_sql);
+if ($random_recipes_stmt === false) {
+    die("Error preparing random posts query: " . $conn->error);
+}
+
+$random_recipes_stmt->bind_param("i", $recipe_id);
+$random_recipes_stmt->execute();
+$random_recipes_result = $random_recipes_stmt->get_result();
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -216,7 +229,7 @@ $random_recipes_result = $conn->query("SELECT * FROM postrecipe ORDER BY RAND() 
         <div class="random-posts-wrapper">
             <?php while ($random_recipe = $random_recipes_result->fetch_assoc()): ?>
                 <div class="random-post">
-                    <a href="recipe.php?recipeid=<?php echo $random_recipe['recipeid']; ?>">
+                    <a href="recipe.php?recipeid=<?php echo $random_recipe['recipeId']; ?>">
                         <img src="<?php echo htmlspecialchars($random_recipe['image']); ?>" alt="Random Post">
                         <h4><?php echo htmlspecialchars($random_recipe['title']); ?></h4>
                         <p><?php echo htmlspecialchars($random_recipe['description']); ?></p>
@@ -227,7 +240,7 @@ $random_recipes_result = $conn->query("SELECT * FROM postrecipe ORDER BY RAND() 
     </div>
 </div>
 
-<?php $conn->close(); ?>
+
 <script>
 function toggleEditForm(commentId) {
     let form = document.getElementById("edit-form-" + commentId);
