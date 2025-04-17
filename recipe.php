@@ -147,6 +147,7 @@ $conn->close();
     <title><?php echo htmlspecialchars($recipe['title']); ?></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
+    
 </head>
 <body class="bodypost">
 <header class="header">
@@ -160,19 +161,27 @@ $conn->close();
         </div>
 
         <div class="post-content">
-            <div class="title-save-wrapper">
-                <h2><?php echo htmlspecialchars($recipe['title']); ?></h2>
-                <?php if ($user_id): ?>
-                    <form action="recipe.php?recipeid=<?php echo $recipe_id; ?>" method="POST">
-                        <button type="submit" name="save_recipe" class="save-button">
-                            <?php echo $is_saved ? "Saved" : "Save"; ?>
-                        </button>
-                    </form>
-                <?php else: ?>
-                    <p>You must be logged in to save recipes.</p>
-                <?php endif; ?>
-            </div>
+        <div class="title-save-wrapper">
+    <form action="edit_recipe.php" method="GET" style="display: inline;">
+        <input type="hidden" name="recipeid" value="<?php echo $recipe_id; ?>">
+        <a href="edit_recipe.php?recipeid=<?php echo $recipe_id; ?>" class="action-link">Edit</a>
+    </form>
+    
+    
+    
+    <h2><?php echo htmlspecialchars($recipe['title']); ?></h2>
+    <?php if ($user_id): ?>
+    <form action="recipe.php?recipeid=<?php echo $recipe_id; ?>" method="POST" style="display: inline;">
+        <button type="submit" name="save_recipe" class="save-button">
+            <?php echo $is_saved ? "Saved" : "Save"; ?>
+        </button>
+    </form>
+<?php else: ?>
+    <p>You must be logged in to save recipes.</p>
+<?php endif; ?>
 
+       
+</div>
             <p><?php echo nl2br(htmlspecialchars($recipe['description'])); ?></p>
             <p class="username">By: <?php echo htmlspecialchars($recipe['username']); ?></p>
 
