@@ -3,11 +3,9 @@ session_start();
 require_once 'db_connection.php';
 include 'includes/header.php'; 
 
-
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
-
     exit();
 }
 ?>
@@ -45,14 +43,13 @@ if (!isset($_SESSION['user_id'])) {
                 <img id="previewImage" alt="Preview Image" style="display: none;">
             </div>
             
+            <!-- Recipe Fields -->
             <div id="recipeFields" class="hidden">
                 <label class="labelform">Ingredients:</label>
                 <textarea class="textareaform" name="ingredients"></textarea>
-                
-                <label class="labelform">Instructions:</label>
-                <textarea class="textareaform" name="instructions"></textarea>
             </div>
 
+            <!-- Pin Fields -->
             <div id="pinFields" class="hidden">
                 <label class="labelform">Type of Food:</label>
                 <input class="inputform" type="text" name="typeoffood" required>
@@ -63,14 +60,29 @@ if (!isset($_SESSION['user_id'])) {
     </div>
     
     <script>
+        // Toggle Fields for Recipe and Pin
         function toggleFields() {
             const type = document.getElementById("type").value;
             const recipeFields = document.getElementById("recipeFields");
             const pinFields = document.getElementById("pinFields");
-            recipeFields.style.display = (type === "recipe") ? "block" : "none";
-            pinFields.style.display = (type === "pin") ? "block" : "none";
+
+            const ingredients = document.querySelector('[name="ingredients"]');
+            const typeOfFood = document.querySelector('[name="typeoffood"]');
+
+            if (type === "recipe") {
+                recipeFields.style.display = "block";
+                pinFields.style.display = "none";
+                ingredients.required = true;
+                typeOfFood.required = false;
+            } else {
+                recipeFields.style.display = "none";
+                pinFields.style.display = "block";
+                ingredients.required = false;
+                typeOfFood.required = true;
+            }
         }
 
+        // Image Upload and Preview
         const imageDropArea = document.getElementById("imageDropArea");
         const imageInput = document.getElementById("imageInput");
         const previewImage = document.getElementById("previewImage");
@@ -119,6 +131,3 @@ if (!isset($_SESSION['user_id'])) {
     </script>
 </body>
 </html>
-
-
-
