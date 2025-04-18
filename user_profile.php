@@ -34,13 +34,11 @@ $created_stmt->bind_param("i", $profile_user_id);
 $created_stmt->execute();
 $created_posts_result = $created_stmt->get_result();
 
-
 $created_recipe_sql = "SELECT * FROM postrecipe WHERE userid = ?";
 $created_recipe_stmt = $conn->prepare($created_recipe_sql);
 $created_recipe_stmt->bind_param("i", $profile_user_id);  // Removed the extra 'd' here
 $created_recipe_stmt->execute();
 $created_recipes_result = $created_recipe_stmt->get_result();
-
 
 $isFollowing = false;
 if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != $profile_user_id) {
@@ -83,91 +81,101 @@ if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != $profile_user_id) {
     <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != $profile_user_id): ?>
         <form method="POST" action="follow_user.php">
             <input type="hidden" name="followed_user_id" value="<?= $profile_user_id ?>">
-            <button type="submit" name="follow" class="<?= $isFollowing ? "specific-unfollow-btn" : "specific-follow-btn" ?>"><?= $isFollowing ? "Unfollow" : "Follow" ?></button>
+            <button type="submit" name="follow" class="<?= $isFollowing ? "specific-unfollow-btn" : "specific-follow-btn" ?>">
+                <?= $isFollowing ? "Unfollow" : "Follow" ?>
+            </button>
         </form>
-    <?php endif; ?>
+        
+        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != $profile_user_id): ?>
+    <form method="POST" action="chat.php?receiver_id=<?= $profile_user_id ?>">
+        <button type="submit" name="message" class="specific-message-btn">Send Message</button>
+    </form>
+<?php endif; ?>
 
-    <div class="specific-toggle-buttons">
-        <button id="specificPostButton" class="active">Posts</button>
-        <button id="specificRecipeButton">Recipes</button>
-    </div>
 
-    <!-- Display Created Posts -->
-    <div class="specific-posts-container">
-        <div class="specific-created-posts">
-            <h3>Created Posts:</h3>
-            <div class="specific-grid-container">
-                <?php
-                $post_query = "SELECT * FROM post WHERE Userid = ?";
-                $post_stmt = $conn->prepare($post_query);
-                $post_stmt->bind_param("i", $profile_user_id);
-                $post_stmt->execute();
-                $post_result = $post_stmt->get_result();
-
-                while ($post = $post_result->fetch_assoc()) {
-                    echo "<div class='specific-grid-item'>";
-                    echo "<a href='post.php?postid=" . $post['postId'] . "'>";
-                    echo "<img src='" . htmlspecialchars($post['image']) . "' alt='Post Image'>";
-                    echo "</a>";
-                    echo "</div>";
-                }
-                ?>
-            </div>
+        <div class="specific-toggle-buttons">
+            <button id="specificPostButton" class="active">Posts</button>
+            <button id="specificRecipeButton">Recipes</button>
         </div>
 
-       <!-- Display Created Recipes -->
-       <div class="specific-created-recipes">
-            <h3>Created Recipes:</h3>
-            <div class="specific-grid-container">
-                <?php if ($created_recipes_result->num_rows > 0): ?>
-                    <div class="grid-container">
-                        <?php while ($recipe = $created_recipes_result->fetch_assoc()): ?>
-                            <div class="grid-item">
-                                <a href="recipe.php?recipeid=<?php echo $recipe['recipeId']; ?>">
-                                    <?php 
-                                    if (!empty($recipe['image']) && file_exists($recipe['image'])): ?>
-                                        <img src="<?php echo htmlspecialchars($recipe['image']); ?>" alt="Recipe Image">
-                                    <?php else: ?>
-                                        <p>Image not available</p>
-                                    <?php endif; ?>
-                                </a>
-                            </div>
-                        <?php endwhile; ?>
-                    </div>
-                <?php else: ?>
-                    <p>No created recipes found.</p>
-                <?php endif; ?>
+        <!-- Display Created Posts -->
+        <div class="specific-posts-container">
+            <div class="specific-created-posts">
+                <h3>Created Posts:</h3>
+                <div class="specific-grid-container">
+                    <?php
+                    $post_query = "SELECT * FROM post WHERE Userid = ?";
+                    $post_stmt = $conn->prepare($post_query);
+                    $post_stmt->bind_param("i", $profile_user_id);
+                    $post_stmt->execute();
+                    $post_result = $post_stmt->get_result();
+
+                    while ($post = $post_result->fetch_assoc()) {
+                        echo "<div class='specific-grid-item'>";
+                        echo "<a href='post.php?postid=" . $post['postId'] . "'>";
+                        echo "<img src='" . htmlspecialchars($post['image']) . "' alt='Post Image'>";
+                        echo "</a>";
+                        echo "</div>";
+                    }
+                    ?>
+                </div>
+            </div>
+
+           <!-- Display Created Recipes -->
+           <div class="specific-created-recipes">
+                <h3>Created Recipes:</h3>
+                <div class="specific-grid-container">
+                    <?php if ($created_recipes_result->num_rows > 0): ?>
+                        <div class="grid-container">
+                            <?php while ($recipe = $created_recipes_result->fetch_assoc()): ?>
+                                <div class="grid-item">
+                                    <a href="recipe.php?recipeid=<?php echo $recipe['recipeId']; ?>">
+                                        <?php 
+                                        if (!empty($recipe['image']) && file_exists($recipe['image'])): ?>
+                                            <img src="<?php echo htmlspecialchars($recipe['image']); ?>" alt="Recipe Image">
+                                        <?php else: ?>
+                                            <p>Image not available</p>
+                                        <?php endif; ?>
+                                    </a>
+                                </div>
+                            <?php endwhile; ?>
+                        </div>
+                    <?php else: ?>
+                        <p>No created recipes found.</p>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
-    </div>
+    <?php endif; ?> <!-- This closes the outer if -->
+</div>
 
-    <script>
-        const specificPostButton = document.getElementById('specificPostButton');
-        const specificRecipeButton = document.getElementById('specificRecipeButton');
-        const specificCreatedPosts = document.querySelector('.specific-created-posts');
-        const specificCreatedRecipes = document.querySelector('.specific-created-recipes');
+<script>
+    const specificPostButton = document.getElementById('specificPostButton');
+    const specificRecipeButton = document.getElementById('specificRecipeButton');
+    const specificCreatedPosts = document.querySelector('.specific-created-posts');
+    const specificCreatedRecipes = document.querySelector('.specific-created-recipes');
 
-        document.addEventListener('DOMContentLoaded', function () {
-            specificPostButton.classList.add('active');
-            specificRecipeButton.classList.remove('active');
-            specificCreatedPosts.style.display = 'block';
-            specificCreatedRecipes.style.display = 'none';
-        });
+    document.addEventListener('DOMContentLoaded', function () {
+        specificPostButton.classList.add('active');
+        specificRecipeButton.classList.remove('active');
+        specificCreatedPosts.style.display = 'block';
+        specificCreatedRecipes.style.display = 'none';
+    });
 
-        specificPostButton.addEventListener('click', function () {
-            specificPostButton.classList.add('active');
-            specificRecipeButton.classList.remove('active');
-            specificCreatedPosts.style.display = 'block';
-            specificCreatedRecipes.style.display = 'none';
-        });
+    specificPostButton.addEventListener('click', function () {
+        specificPostButton.classList.add('active');
+        specificRecipeButton.classList.remove('active');
+        specificCreatedPosts.style.display = 'block';
+        specificCreatedRecipes.style.display = 'none';
+    });
 
-        specificRecipeButton.addEventListener('click', function () {
-            specificRecipeButton.classList.add('active');
-            specificPostButton.classList.remove('active');
-            specificCreatedPosts.style.display = 'none';
-            specificCreatedRecipes.style.display = 'block';
-        });
-    </script>
+    specificRecipeButton.addEventListener('click', function () {
+        specificRecipeButton.classList.add('active');
+        specificPostButton.classList.remove('active');
+        specificCreatedPosts.style.display = 'none';
+        specificCreatedRecipes.style.display = 'block';
+    });
+</script>
 
 </body>
 </html>
