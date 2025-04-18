@@ -4,7 +4,6 @@ if (isset($_GET['query'])) {
     include 'db_connection.php';
     include 'includes/header.php'; 
 
-
     $like = "%" . $searchTerm . "%";
 
     // Function to perform the search on a table
@@ -29,37 +28,28 @@ if (isset($_GET['query'])) {
         // Display results from 'post' table with clickable links
         if ($resultsPost->num_rows > 0) {
             while ($row = $resultsPost->fetch_assoc()) {
-                // Link to post.php with the postid as a GET parameter
                 echo "<div class='search-item'>";
                 echo "<a href='post.php?postid=" . htmlspecialchars($row['postId']) . "' class='search-card'>";
                 echo "<img src='" . htmlspecialchars($row['image']) . "' alt='Recipe Image' />";
                 echo "<div class='search-card-content'>";
                 echo "<h2>" . htmlspecialchars($row['title']) . "</h2>";
-
-                // Check if 'recipeid' exists in 'post' table results
                 if (isset($row['recipeid'])) {
                     echo "<p>Recipe ID: " . $row['recipeid'] . "</p>";
                 }
-
-                echo "</div></a></div>";  // Close the link and search item div
+                echo "</div></a></div>";
             }
         }
 
-        // Display results from 'postrecipe' table without clickable links
+        // Display results from 'postrecipe' table with clickable links
         if ($resultsRecipe->num_rows > 0) {
             while ($row = $resultsRecipe->fetch_assoc()) {
                 echo "<div class='search-item'>";
-                echo "<div class='search-card'>";
+                echo "<a href='recipe.php?recipeid=" . htmlspecialchars($row['recipeId']) . "' class='search-card'>";
                 echo "<img src='" . htmlspecialchars($row['image']) . "' alt='Recipe Image' />";
                 echo "<div class='search-card-content'>";
                 echo "<h2>" . htmlspecialchars($row['title']) . "</h2>";
-
-                // Check if 'recipeid' exists in 'postrecipe' table results
-                if (isset($row['recipeid'])) {
-                    echo "<p>Recipe ID: " . $row['recipeid'] . "</p>";
-                }
-
-                echo "</div></div></div>";
+                
+                echo "</div></a></div>";
             }
         }
 

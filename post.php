@@ -12,9 +12,10 @@ if ($post_id <= 0) {
 }
 
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
-$sql = "SELECT post.*, user.username FROM post 
-        JOIN user ON post.userid = user.userid 
+$sql = "SELECT post.*, post.Userid AS post_owner_id, user.username FROM post 
+        JOIN user ON post.Userid = user.userid 
         WHERE post.postid = ?";
+
 $stmt = $conn->prepare($sql);
 
 if ($stmt === false) {
@@ -115,6 +116,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['comment']) && $user_id
     }
 }
 
+
 // Handle comment editing
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_comment']) && isset($_POST['new_content'])) {
     $comment_id = $_POST['comment_id'];
@@ -193,6 +195,13 @@ $conn->close();
 
             <div class="post-content">
                 <div class="title-save-wrapper">
+                <?php if ($user_id && $user_id == $post['post_owner_id']): ?>
+                    <form action="edit_post.php" method="GET" style="display: inline;">
+        <input type="hidden" name="postid" value="<?php echo $post_id; ?>">
+        <a href="edit_post.php?postid=<?php echo $post_id; ?>" class="action-link">Edit</a>
+    </form>
+<?php endif; ?>
+                
                     <h2><?php echo htmlspecialchars($post['title']); ?></h2>
                     <?php if ($user_id): ?>
                         <form action="post.php?postid=<?php echo $post_id; ?>" method="POST">
@@ -206,7 +215,15 @@ $conn->close();
                 </div>
 
                 <p><?php echo nl2br(htmlspecialchars($post['description'])); ?></p>
-                <p class="username">By: <?php echo htmlspecialchars($post['username']); ?></p>
+                <p class="creator-view">
+    By: 
+    <?php if ($user_id && $user_id == $post['Userid']): ?>
+        <a href="profile.php"><?php echo htmlspecialchars($post['username']); ?></a>
+    <?php else: ?>
+        <a href="user_profile.php?userid=<?php echo $post['Userid']; ?>"><?php echo htmlspecialchars($post['username']); ?></a>
+    <?php endif; ?>
+</p>
+
                 <form method="POST" action="love_post.php" class="like-form">
     <input type="hidden" name="postid" value="<?php echo $post_id; ?>">
     <button 
@@ -305,6 +322,7 @@ $conn->close();
                 .then(data => {
                     if (data.status !== "liked" && data.status !== "unliked") {
                         alert("Something went wrong: " + data.error);
+                        // Revert UI in case of error
                         likeButton.setAttribute("data-liked", isLiked);
                         likeButton.classList.toggle("fa-solid", isLiked);
                         likeButton.classList.toggle("fa-regular", !isLiked);

@@ -21,7 +21,6 @@
 
   <!-- Right: Navigation Links (or icons) -->
   <div class="nav-links">
-    <a href="#">Today</a>
     <a href="create.php">Create</a>
     <a href="profile.php">Profile</a>
   </div>

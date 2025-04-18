@@ -17,4 +17,5 @@ function connectToDatabase() {
     global $conn; 
     return $conn;
 }
+
 ?>

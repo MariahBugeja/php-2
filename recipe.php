@@ -12,6 +12,9 @@ if ($recipe_id <= 0) {
 }
 
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+$sql = "SELECT postrecipe.*, postrecipe.userid AS recipe_owner_id, user.username FROM postrecipe 
+        JOIN user ON postrecipe.userid = user.userid 
+        WHERE postrecipe.recipeid = ?";
 
 // Get recipe details
 $sql = "SELECT postrecipe.*, user.username FROM postrecipe 
@@ -162,10 +165,13 @@ $conn->close();
 
         <div class="post-content">
         <div class="title-save-wrapper">
+        <?php if ($user_id && $user_id == $recipe['Userid']): ?>
     <form action="edit_recipe.php" method="GET" style="display: inline;">
         <input type="hidden" name="recipeid" value="<?php echo $recipe_id; ?>">
         <a href="edit_recipe.php?recipeid=<?php echo $recipe_id; ?>" class="action-link">Edit</a>
     </form>
+<?php endif; ?>
+
     
     
     
@@ -182,8 +188,21 @@ $conn->close();
 
        
 </div>
-            <p><?php echo nl2br(htmlspecialchars($recipe['description'])); ?></p>
-            <p class="username">By: <?php echo htmlspecialchars($recipe['username']); ?></p>
+<p><?php echo nl2br(htmlspecialchars($recipe['description'])); ?></p>
+<p><?php echo nl2br(htmlspecialchars($recipe['ingredients'])); ?></p>
+
+<p class="creator-view">
+    Created by: 
+    <?php if ($user_id && $user_id == $recipe['Userid']): ?>
+        <a href="profile.php"><?php echo htmlspecialchars($recipe['username']); ?></a>
+    <?php else: ?>
+        <a href="user_profile.php?userid=<?php echo $recipe['Userid']; ?>"><?php echo htmlspecialchars($recipe['username']); ?></a>
+    <?php endif; ?>
+</p>
+
+
+
+
 
             <!-- Like Button -->
             <form method="POST" action="love_recipe.php" class="like-form">
