@@ -1075,3 +1075,16 @@ body {
             display: none;
         }
         
+
+
+        .delete-text {
+            font-size: 12px; 
+    color: #888; 
+    text-decoration: none; 
+}
+        
+        
+        .delete-text:hover {
+            color: #555; 
+        }
+        

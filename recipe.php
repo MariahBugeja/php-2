@@ -172,8 +172,13 @@ $conn->close();
     </form>
 <?php endif; ?>
 
-    
-    
+<?php if ($user_id && $user_id == $recipe['Userid']): ?>
+    <form action="delete_recipe.php" method="POST" style="display: inline;">
+        <input type="hidden" name="recipeid" value="<?php echo $recipe_id; ?>">
+        <span onclick="if(confirm('Are you sure you want to delete this post?')){this.closest('form').submit();}" class="delete-text">Delete Post</span>
+    </form>
+<?php endif; ?>
+
     
     <h2><?php echo htmlspecialchars($recipe['title']); ?></h2>
     <?php if ($user_id): ?>

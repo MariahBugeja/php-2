@@ -34,11 +34,13 @@ $created_stmt->bind_param("i", $profile_user_id);
 $created_stmt->execute();
 $created_posts_result = $created_stmt->get_result();
 
+
 $created_recipe_sql = "SELECT * FROM postrecipe WHERE userid = ?";
 $created_recipe_stmt = $conn->prepare($created_recipe_sql);
-$created_recipe_stmt->bind_param("i", $profile_user_id);  d
+$created_recipe_stmt->bind_param("i", $profile_user_id);  // Removed the extra 'd' here
 $created_recipe_stmt->execute();
 $created_recipes_result = $created_recipe_stmt->get_result();
+
 
 $isFollowing = false;
 if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != $profile_user_id) {
