@@ -233,6 +233,19 @@ $conn->close();
     style="background: none; border: none; font-size: 24px; color: <?php echo $user_has_loved ? 'red' : '#ccc'; ?>; cursor: pointer;">
 </button>
 </form> 
+<form id="ratingForm">
+  <input type="hidden" id="postid" value="123"> 
+  <label for="rating">Rate this recipe: </label>
+  <select id="rating" name="rating">
+    <option value="1">1 Star</option>
+    <option value="2">2 Stars</option>
+    <option value="3">3 Stars</option>
+    <option value="4">4 Stars</option>
+    <option value="5">5 Stars</option>
+  </select>
+  <button type="submit" id="submitRating">Submit Rating</button>
+  <div id="ratingMessage"></div> 
+</form>
 
 
                 
@@ -295,6 +308,25 @@ $conn->close();
         let form = document.getElementById("edit-form-" + commentId);
         form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
     }
+    document.getElementById('ratingForm').addEventListener('submit', function(e) {
+    e.preventDefault(); 
+    
+    const formData = new FormData(this); 
+    
+    fetch('rating_post.php', { 
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById('ratingMessage').innerText = data; 
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('ratingMessage').innerText = "There was an error submitting your rating.";
+    });
+});
+
     document.addEventListener("DOMContentLoaded", function () {
         const likeButton = document.getElementById("loveButton-<?php echo $post_id; ?>");
 
