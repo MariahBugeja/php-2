@@ -219,6 +219,21 @@ $conn->close();
                     style="background: none; border: none; font-size: 24px; color: <?php echo $user_has_loved ? 'red' : '#ccc'; ?>; cursor: pointer;">
                 </button>
             </form>
+            <form id="ratingForm">
+    <input type="hidden" name="recipe_id" id="recipe_id" value="<?php echo $recipe_id; ?>">
+    <label for="rating">Rate this recipe:</label>
+    <select name="rating" id="rating">
+        <option value="1">★☆☆☆☆</option>
+        <option value="2">★★☆☆☆</option>
+        <option value="3">★★★☆☆</option>
+        <option value="4">★★★★☆</option>
+        <option value="5">★★★★★</option>
+    </select>
+    <button type="submit">Submit</button>
+</form>
+
+<p id="ratingMessage"></p>
+
 
             <!-- Comments -->
             <div class="comments-section">
@@ -273,7 +288,6 @@ $conn->close();
     </div>
 </div>
 
-
 <script>
 function toggleEditForm(commentId) {
     let form = document.getElementById("edit-form-" + commentId);
@@ -281,8 +295,36 @@ function toggleEditForm(commentId) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    const likeButton = document.getElementById("loveButton-<?php echo $recipe_id; ?>");
+    // ⭐ RATING SUBMIT
+    const ratingForm = document.getElementById('ratingForm');
+    if (ratingForm) {
+        ratingForm.addEventListener('submit', function(e) {
+            e.preventDefault();
 
+            const recipeId = document.getElementById('recipe_id').value;
+            const rating = document.getElementById('rating').value;
+
+            const formData = new FormData();
+            formData.append('recipe_id', recipeId);
+            formData.append('rating', rating);
+
+            fetch('rate_recipe.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.text())
+            .then(response => {
+                if (response === 'success') {
+                    document.getElementById('ratingMessage').innerText = "Thanks for your rating!";
+                } else {
+                    document.getElementById('ratingMessage').innerText = "There was a problem submitting your rating.";
+                }
+            });
+        });
+    }
+
+    // ❤️ LIKE / LOVE BUTTON
+    const likeButton = document.getElementById("loveButton-<?php echo $recipe_id; ?>");
     if (likeButton) {
         likeButton.addEventListener("click", function (e) {
             e.preventDefault();
